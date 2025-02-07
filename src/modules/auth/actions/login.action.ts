@@ -1,13 +1,12 @@
 import { tesloApi } from '@/api/tesloApi';
-import type { AuthResponse, User } from '../interface';
+import type { AuthResponse, User } from '../interfaces';
 import { isAxiosError } from 'axios';
 
 interface LoginError {
   ok: false;
   message: string;
 }
-
-interface LoginSuccess {
+interface LoginSucces {
   ok: true;
   user: User;
   token: string;
@@ -16,11 +15,11 @@ interface LoginSuccess {
 export const loginAction = async (
   email: string,
   password: string,
-): Promise<LoginError | LoginSuccess> => {
+): Promise<LoginError | LoginSucces> => {
   try {
     const { data } = await tesloApi.post<AuthResponse>('/auth/login', {
-      email,
-      password,
+      email, //esta es la data que le mando al backend
+      password, //esta es la data que le mando al backend
     });
 
     return {
@@ -29,14 +28,15 @@ export const loginAction = async (
       token: data.token,
     };
   } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 401) {
-      return {
-        ok: false,
-        message: 'Usuario o contraseña incorrectos',
-      };
+    //hay dos tipos de errores, controlados y no controlados
+    if (isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        return {
+          ok: false,
+          message: 'Usuario o contrasena incorrectos',
+        };
+      }
     }
-
-    console.log(error);
-    throw new Error('No se pudo realizar la petición');
+    throw new Error('No se pudo realizar la peticion');
   }
 };

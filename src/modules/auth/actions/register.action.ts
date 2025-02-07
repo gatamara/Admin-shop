@@ -1,39 +1,43 @@
 import { tesloApi } from '@/api/tesloApi';
-import type { AuthResponse, User } from '../interfaces';
+import { isAxiosError } from 'axios';
+import type { User } from '../interfaces';
 
 interface RegisterError {
   ok: false;
   message: string;
 }
-
-interface RegisterSuccess {
+interface RegisterSucces {
   ok: true;
   user: User;
   token: string;
 }
 
 export const registerAction = async (
-  fullName: string,
+  fullname: string,
   email: string,
   password: string,
-): Promise<RegisterError | RegisterSuccess> => {
+): Promise<RegisterSucces | RegisterError> => {
   try {
-    const { data } = await tesloApi.post<AuthResponse>('/auth/register', {
-      fullName,
+    const { data } = await tesloApi.post('/auth/register', {
+      fullname,
       email,
       password,
     });
-
     return {
       ok: true,
       user: data.user,
       token: data.token,
     };
   } catch (error) {
-    console.log(error);
-    return {
-      ok: false,
-      message: 'No se pudo crear el usuario',
-    };
+    //hay dos tipos de errores, controlados y no controlados
+    if (isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        return {
+          ok: false,
+          message: 'Usuario o contrasena incorrectos',
+        };
+      }
+    }
+    throw new Error('No se pudo crear el usuario');
   }
 };
