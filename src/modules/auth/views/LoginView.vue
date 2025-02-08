@@ -42,6 +42,7 @@ import { useToast } from 'vue-toastification';
 
 
 const authStore = useAuthStore()
+
 const toast = useToast()
 const emailInputRef = ref<HTMLInputElement | null>(null)
 const passwordInputRef = ref<HTMLInputElement | null>(null)
@@ -74,16 +75,14 @@ const onLogin = async () => {
   if (ok) { return }
 
   toast.error('Usuario/Contrase;a no son correctos')
-
-  watchEffect(() => {
-    const email = localStorage.getItem('email')
-    if (email) {
-      myForm.email = email
-      myForm.rememberMe = true
-    }
-
-  })
-
-
 };
+
+watchEffect(() => {
+  const email = localStorage.getItem('email')
+  if (email) {
+    myForm.email = email
+    myForm.rememberMe = true
+  }
+
+})
 </script>

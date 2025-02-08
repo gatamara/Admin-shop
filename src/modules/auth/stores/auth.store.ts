@@ -4,6 +4,7 @@ import type { User } from '../interfaces/user.interface';
 import { AuthStatus } from '../interfaces';
 import { loginAction, registerAction } from '../actions';
 import { useLocalStorage } from '@vueuse/core';
+import { checkAuthAction } from '../actions/check-auth.action';
 
 export const useAuthStore = defineStore('auth', () => {
   //Authenticated, unAuthenticated, Checking - son los tres estados que tendre en mi autenticacion
@@ -31,9 +32,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   //funcion que limpia el store
   const logout = () => {
+    localStorage.removeItem('token');
     authStatus.value = AuthStatus.Unauthenticated;
     user.value = undefined;
     token.value = '';
+    console.log('usuario cerrado');
+
     return false;
   };
 
@@ -55,7 +59,28 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const checkAuthStatus = async (): Promise<boolean> => {
+    try {
+      const statusResp = await checkAuthAction();
+
+      if (!statusResp.ok) {
+        logout();
+        return false;
+      }
+      authStatus.value = AuthStatus.Authenticated;
+      user.value = statusResp.user;
+      token.value = statusResp.token;
+      return true;
+    } catch (error) {
+      logout();
+      console.log(error);
+
+      return false;
+    }
+  };
+
   return {
+    //state
     user,
     token,
     authStatus,
@@ -63,13 +88,13 @@ export const useAuthStore = defineStore('auth', () => {
     //Getters - booleanos
     isCheking: computed(() => authStatus.value === AuthStatus.Checking), //esto va a devolver un true
     isAutenticated: computed(() => authStatus.value === AuthStatus.Authenticated),
-
-    //Todo: getter para saber si es Admin o no
-
+    isAdmin: computed(() => user.value?.roles.includes('admin') ?? false),
     username: computed(() => user.value?.fullName), //saber el nombre del usuario
 
     //acciones
+    logout,
     login,
     register,
+    checkAuthStatus,
   };
 });
