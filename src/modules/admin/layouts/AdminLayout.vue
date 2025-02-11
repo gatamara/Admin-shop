@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DashboardView from '../views/DashboardView.vue';
 
 </script>
 
@@ -128,7 +127,7 @@ import DashboardView from '../views/DashboardView.vue';
         </button>
       </div>
       <div class="flex-grow p-6 overflow-auto bg-gray-200">
-        <DashboardView />
+        <RouterView />
       </div>
     </div>
     <!-- Component End  -->
@@ -148,5 +147,5 @@ import DashboardView from '../views/DashboardView.vue';
     </div>
     <span class="text-sm ml-1 leading-none">@lofiui</span>
   </a>
-  <RouterView />
+
 </template>
