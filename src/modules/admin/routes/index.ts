@@ -19,5 +19,11 @@ export const adminRoutes: RouteRecordRaw = {
       name: 'admin-products',
       component: () => import('@/modules/admin/views/ProductsView.vue'),
     },
+    {
+      path: 'products/:productId',
+      name: 'admin-product',
+      props: true, //para que haga el match con el segmento de la URL y la property
+      component: () => import('@/modules/admin/views/ProductView.vue'),
+    },
   ],
 };

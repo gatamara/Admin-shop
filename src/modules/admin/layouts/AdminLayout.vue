@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <!-- component -->
   <div class="flex w-screen h-screen text-gray-700">
@@ -44,8 +40,7 @@
             d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
         </svg>
       </a>
-      <a class="flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 mt-auto rounded hover:bg-gray-300"
-        href="#">
+      <a class="flex items-center justify-center flex-shrink-0 w-10 h-10  mt-auto rounded hover:bg-gray-300" href="#">
         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -71,12 +66,14 @@
         </div>
       </button>
       <div class="flex flex-col flex-grow p-4 overflow-auto">
-        <a class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" href="#">
-          <span class="leading-none">Item 1</span>
-        </a>
-        <a class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" href="#">
-          <span class="leading-none">Item 2</span>
-        </a>
+        <RouterLink to="/admin"
+          class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300">
+          <span class="leading-none">Dashboard</span>
+        </RouterLink>
+        <RouterLink to="/admin/products"
+          class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300">
+          <span class="leading-none">Productos</span>
+        </RouterLink>
         <a class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" href="#">
           <span class="leading-none">Item 3</span>
         </a>
@@ -89,19 +86,20 @@
         <a class="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" href="#">
           <span class="leading-none">Item 6</span>
         </a>
-        <a class="flex items-center flex-shrink-0 h-10 px-3 mt-auto text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+        <a class="flex items-center flex-shrink-0 h-10 px-3 mt-auto text-sm font-medium bg-blue-500 rounded hover:bg-blue-700 text-white"
           href="#">
           <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          <span class="ml-2 leading-none">New Item</span>
+          <span class="ml-2 leading-none">Nuevo Producto
+          </span>
         </a>
       </div>
 
     </div>
     <div class="flex flex-col flex-grow">
       <div class="flex items-center flex-shrink-0 h-16 px-8 border-b border-gray-300">
-        <h1 class="text-lg font-medium">Page Title</h1>
+        <h1 class="text-lg font-medium">{{ authStore.username }}</h1>
         <button
           class="flex items-center justify-center h-10 px-4 ml-auto text-sm font-medium rounded hover:bg-gray-300">
           Action 1
@@ -149,3 +147,13 @@
   </a>
 
 </template>
+
+<script setup lang="ts">
+import { useAuthStore } from '../../auth/stores/auth.store';
+
+
+const authStore = useAuthStore()
+
+
+
+</script>

@@ -21,8 +21,9 @@
                 <img :src="product.images[0]" :alt="product.title" class="h-10 w-10 object-cover" />
               </td>
               <td class=" text-left py-3 px-4">
-                <RouterLink :to="`admin/products/${product.id}`" class="hover:text-blue-500 hover:underline">{{
-                  product.title }} </RouterLink>
+                <RouterLink :to="`/admin/products/${product.id}`" class="hover:text-blue-500 hover:underline">
+                  {{ product.title }}
+                </RouterLink>
               </td>
               <td class="text-left py-3 px-4"> <span class="bg-blue-200 text-blue-600 py-1 px-3 rounded-full text-xs">
                   {{ product.price }}</span> </td>
@@ -34,12 +35,11 @@
           </tbody>
         </table>
       </div>
-      <ButtonPagination :page="page" :has-more-data="!!products && products.length > 10" />
+      <ButtonPagination :page="page" :has-more-data="!!products && products.length < 10" />
     </div>
   </div>
 
 </template>
-
 
 
 <script setup lang="ts">
@@ -48,7 +48,6 @@ import { usePagination } from '@/modules/common/composables/usePagination';
 import { getProductsActions } from '@/modules/products/actions';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { watchEffect } from 'vue';
-
 
 
 const queryClient = useQueryClient()
