@@ -2,8 +2,26 @@ import { tesloApi } from '@/api/tesloApi';
 import type { Product } from '../interfaces/product.interface';
 import { getProductImageAction } from './get-product-image.actions';
 
-export const getProductById = async (productId: string) => {
-  //TODO: pensar la creacion de un nuevo producto
+
+export const getProductById = async (productId: string):Promise<Product> => {
+  console.log({productId});
+  
+ 
+  if ( productId === 'create') {
+    return {  //si el id es create, regresamos un objeto vacio
+      id: '',         
+      title: '',
+      slug: '',
+      description: '',
+      price: 0,
+      stock: 0,
+      images: [],
+      tags: [],
+      sizes: [],
+      gender: '' ,
+      user:{}
+    };
+  }
 
   try {
     const { data } = await tesloApi.get<Product>(`/products/${productId}`); //esto va a regresar la data de un producto
