@@ -2,12 +2,20 @@ import { tesloApi } from '@/api/tesloApi';
 import type { Product } from '../interfaces/product.interface';
 
 export const createUpdateProductAction = async (product: Partial<Product>) => {
-  const productId=product.id;
-  product = cleanProductForCreateUpdate(product);
-  if (product.id && product.id !== '') {
+  const productId=product.id; //recibimos el producto y mantenemos el id
+  //preparamos las imagenes
+
+  const newImages =await uploadImages(product.images ?? [] ) //verifican  las imagenes
+  product.images = newImages; //se cargan en el producto
+
+
+
+  product = cleanProductForCreateUpdate(product); //se limpian las imagenes y data
+
+  if (productId && productId !== '') {
     //actualizar producto
 
-    return await updateProduct(productId!, product);
+    return await updateProduct(productId, product);
   }
   //crear producto
   return await createProduct(product);
@@ -59,3 +67,32 @@ const createProduct = async (product: Partial<Product>) => {
     throw new Error('Error creating product');
   }
 };
+
+
+const uploadImages = async (images:(string|File)[] ) => {
+
+  const filesToUpload = images.filter((image) => image instanceof File) as File[]; //filtramos los archivos que son de tipo File
+  const currentImages = images.filter((image) => typeof image === 'string') as string[]; //filtramos las imagenes que son de tipo string
+
+  const uploadPromises =filesToUpload.map( async(file) => {
+
+try {
+    const formData = new FormData();
+    formData.append('file', file);//el key es file, y el value es el archivo
+    const { data } = await tesloApi.post<{ secureUrl: string }>('/files/product', formData
+
+    );
+    return data.secureUrl;
+  } catch (error) {
+    console.log(error);
+    throw new Error('Error uploading image');
+  }
+
+  }) //subimos las imagenes
+
+
+  const uploadedImages = await Promise.all(uploadPromises); //esperamos a que todas las imagenes se suban
+  return [...currentImages, ...uploadedImages]; //devolvemos las imagenes que ya tengo y las nuevas imagines que se subieron
+  //cuando cargamos una images el resultado final es una secureUrl, por eso lo guardamos en un array de strings
+  //ejemplo:"secureUrl": "https://res.cloudinary.com/dzjv6tj3e/image/upload/v1633662924/teslo/"
+}

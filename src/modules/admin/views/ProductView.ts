@@ -4,7 +4,7 @@ import { createUpdateProductAction, getProductById } from '@/modules/products/ac
 import { useMutation, useQuery } from '@tanstack/vue-query';
 import { useFieldArray, useForm } from 'vee-validate';
 
-import { defineComponent, watch, watchEffect } from 'vue';
+import { defineComponent, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import * as yup from 'yup';
@@ -68,11 +68,20 @@ export default defineComponent({
     const [stock, stockAttrs] = defineField('stock');
     const [gender, genderAttrs] = defineField('gender');
 
+
     const { fields: sizes, remove: removeSize, push: pushSize } = useFieldArray<string>('sizes');
     const { fields: images } = useFieldArray<string>('images'); // un arreglo de string
+    const imageFiles=ref<File[]>([]); //un arreglo de archivos
 
     const onSubmit = handleSubmit((values) => {
-      mutate(values);
+      const formValues = {
+        ...values,
+        images: [...values.images, ...imageFiles.value],
+        //http://localhost:3000/api/products/1
+        //File
+
+      };
+      mutate(formValues);
     });
     //handleSubmit es propio de useForm, el cual se encarga que todos los valores del formulario sean validos
     //y si lo son, ejecuta la funcion que le pasamos como argumento
@@ -87,6 +96,19 @@ export default defineComponent({
         pushSize(size);
       }
     };
+
+    const onFilesChange=(event:Event)=>{
+      const fileInput = event.target as HTMLInputElement;
+      const fileList=fileInput.files
+
+      if(!fileList) return;
+      if(fileList.length===0) return;
+
+      for(const imageFile of fileList){
+        imageFiles.value.push(imageFile);
+      }
+
+    }
 
     watchEffect(() => {
       if (isError.value && !isLoading.value) {
@@ -144,6 +166,7 @@ export default defineComponent({
       genderAttrs,
       images,
       sizes,
+      imageFiles,
 
       isPending,
 
@@ -153,11 +176,16 @@ export default defineComponent({
       //actions
       onSubmit,
       toggleSize,
+      onFilesChange,
 
       hasSize: (size: string) => {
         const currentSizes = sizes.value.map((s) => s.value);
         return currentSizes.includes(size);
       },
+      temporalImageUrl:(imageFile:File)=>{
+        return URL.createObjectURL(imageFile);
+
+      }
     };
   },
 });
