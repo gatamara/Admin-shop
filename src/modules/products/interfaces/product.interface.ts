@@ -1,4 +1,5 @@
-import type { User } from '@/modules/auth/interface/user.interface';
+import type { User } from "@/modules/auth/interfaces";
+
 
 export interface Product {
   id: string;

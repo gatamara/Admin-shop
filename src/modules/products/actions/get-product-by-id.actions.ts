@@ -1,15 +1,15 @@
 import { tesloApi } from '@/api/tesloApi';
-import type { Product } from '../interfaces/product.interface';
+import { Gender, type Product } from '../interfaces/product.interface';
 import { getProductImageAction } from './get-product-image.actions';
 
 
 export const getProductById = async (productId: string):Promise<Product> => {
   console.log({productId});
-  
- 
+
+
   if ( productId === 'create') {
     return {  //si el id es create, regresamos un objeto vacio
-      id: '',         
+      id: '',
       title: '',
       slug: '',
       description: '',
@@ -18,14 +18,21 @@ export const getProductById = async (productId: string):Promise<Product> => {
       images: [],
       tags: [],
       sizes: [],
-      gender: '' ,
-      user:{}
+      gender: Gender.Kid,
+      user:{
+        id: '',
+        email: '',
+
+        fullName: '',
+        isActive: false,
+        roles: [],
+      }
     };
   }
 
   try {
     const { data } = await tesloApi.get<Product>(`/products/${productId}`); //esto va a regresar la data de un producto
-    console.log({ data });
+
 
     return {
       ...data, //si se encuentra el producto, un spread de la data
@@ -33,6 +40,6 @@ export const getProductById = async (productId: string):Promise<Product> => {
     };
   } catch (error) {
     console.log(error);
-    throw new Error(`Error getting product by id ${productId} `);
+    throw new Error(`Error getting product by id ${productId}`);
   }
 };
