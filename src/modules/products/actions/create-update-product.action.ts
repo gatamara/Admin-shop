@@ -88,6 +88,7 @@ try {
     throw new Error('Error uploading image');
   }
 
+
   }) //subimos las imagenes
 
 

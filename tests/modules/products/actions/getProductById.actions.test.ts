@@ -38,7 +38,7 @@ describe('getProductById', () => {
     try {
       await getProductById('id-no-exists')
       expect(true).toBe(false)
-    } catch (error:any) {
+    } catch (error: Error) {
       expect(error.message).toBe('Error getting product by id id-no-exists')
     }
   })
